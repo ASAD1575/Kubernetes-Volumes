@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: aws-files-nginx-deployment
+  labels:
+    app: aws-files-nginx-app
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: aws-files-nginx-app
+  template:  
+    metadata:
+      labels: 
+        app: aws-files-nginx-app
+    spec:
+      containers:
+        - name: aws-files-nginx-app
+          image: stacksimplify/kube-nginxapp1:1.0.0
+          imagePullPolicy: Always  # IfNotPresent, Always, Never
+          ports: 
+            - containerPort: 80         
+          volumeMounts:
+            - name: my-awsfile-volume     # my-azurefile-volume
+              mountPath: "/usr/share/nginx/html/app1"
+      volumes:
+        - name: my-awsfile-volume     # my-azurefile-volume
+          persistentVolumeClaim:
+            claimName: my-awsfile-pvc     # my-azurefile-pvc
+
